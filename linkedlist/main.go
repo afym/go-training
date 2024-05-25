@@ -86,6 +86,38 @@ func (l *LinkedList) Reverse() {
 	}
 }
 
+// h1 > h2
+func ZipperLinkedLists(h1, h2 *Node) *Node {
+	if h1 == nil {
+		return nil
+	}
+
+	counter := 1
+
+	c1 := h1
+	c2 := h2
+
+	l := LinkedList{}
+
+	for c1 != nil || c2 != nil {
+
+		if counter%2 != 0 {
+			l.Insert(c1.Value)
+			c1 = c1.Next
+			counter += 1
+			continue
+		}
+
+		if c2 != nil {
+			l.Insert(c2.Value)
+			c2 = c2.Next
+			counter += 1
+		}
+	}
+
+	return l.Head
+}
+
 func main() {
 	list := LinkedList{}
 	list.Insert(12)
@@ -125,4 +157,23 @@ func main() {
 		current = current.Next
 	}
 
+	l1 := LinkedList{}
+	l1.Insert(2)
+	l1.Insert(4)
+	l1.Insert(6)
+	l1.Insert(8)
+
+	l2 := LinkedList{}
+	l2.Insert(5)
+	l2.Insert(15)
+	l2.Insert(25)
+	l2.Insert(35)
+
+	zip := ZipperLinkedLists(l1.Head, l2.Head)
+
+	fmt.Println("zipper node")
+	for zip != nil {
+		fmt.Println(zip.Value)
+		zip = zip.Next
+	}
 }
