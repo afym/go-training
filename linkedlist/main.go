@@ -108,11 +108,10 @@ func ZipperLinkedLists(h1, h2 *Node) *Node {
 			continue
 		}
 
-		if c2 != nil {
-			l.Insert(c2.Value)
-			c2 = c2.Next
-			counter += 1
-		}
+		l.Insert(c2.Value)
+		c2 = c2.Next
+		counter += 1
+
 	}
 
 	return l.Head
