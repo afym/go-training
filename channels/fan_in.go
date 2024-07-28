@@ -1,5 +1,35 @@
 package main
 
+/*
+     Fan-In Pattern: Multiple workers send messages to a single channel, and the main routine processes them.
+     Visualization of the Fan-In pattern:
+    
+           +-------+       +-------------+
+           | Worker|       |             |
+           |   1   | ----> |             |
+           +-------+       |             |
+                           |             |
+           +-------+       |             |
+           | Worker|       |             |
+           |   2   | ----> |    Channel  |
+           +-------+       |     (ch)    | ----> Main Go Routine
+                           |             |       Receives Messages
+           +-------+       |             |
+           | Worker|       |             |
+           |   3   | ----> |             |
+           +-------+       |             |
+                           |             |
+           +-------+       |             |
+           | Worker|       |             |
+           |   4   | ----> |             |
+           +-------+       |             |
+                           |             |
+           +-------+       +-------------+
+           | Worker|
+           |   5   | ---->
+           +-------+
+*/
+
 import (
 	"fmt"
 	"math/rand"
@@ -19,37 +49,6 @@ func worker(id int, exact bool, ch chan string) {
 	ch <- message
 }
 
-// Multiple workers (Go routines) produce messages and send them to a single channel.
-
-
-    // Visualization of the Fan-In pattern:
-    //
-    //       +-------+       +-------------+
-    //       | Worker|       |             |
-    //       |   1   | ----> |             |
-    //       +-------+       |             |
-    //                       |             |
-    //       +-------+       |             |
-    //       | Worker|       |             |
-    //       |   2   | ----> |    Channel  |
-    //       +-------+       |     (ch)    | ----> Main Go Routine
-    //                       |             |       Receives Messages
-    //       +-------+       |             |
-    //       | Worker|       |             |
-    //       |   3   | ----> |             |
-    //       +-------+       |             |
-    //                       |             |
-    //       +-------+       |             |
-    //       | Worker|       |             |
-    //       |   4   | ----> |             |
-    //       +-------+       |             |
-    //                       |             |
-    //       +-------+       +-------------+
-    //       | Worker|
-    //       |   5   | ---->
-    //       +-------+
-    //
-    // Fan-In Pattern: Multiple workers send messages to a single channel, and the main routine processes them.
 
 
 func main() {
