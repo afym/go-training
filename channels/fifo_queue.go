@@ -21,7 +21,7 @@ func worker(id int, exact bool, ch chan string) {
 
 func main() {
 	rand.NewSource(time.Now().UnixNano())
-	ch := make(chan string, 1)
+	ch := make(chan string, 1) // can hold up to 1 message
 
 	go worker(1, false, ch)
 	go worker(2, true, ch)
