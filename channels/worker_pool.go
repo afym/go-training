@@ -54,7 +54,7 @@ func worker(id int, duration time.Duration, tasks <-chan int, wg *sync.WaitGroup
 }
 
 func main() {
-	tasks := make(chan int, 3) // 
+	tasks := make(chan int, 3) // can hold up to 3 message
 	var wg sync.WaitGroup
 
 	wg.Add(1)
