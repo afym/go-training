@@ -31,7 +31,7 @@ type trafficLight struct {
 	period  int
 	config  Configuration
 	light   string
-	mu      sync.Mutex
+	mu      sync.Mutex // not needed  (just an example)
 	cxt     context.Context
 }
 
@@ -56,13 +56,13 @@ func (t *trafficLight) On() {
 				case <-t.cxt.Done():
 					return
 				default:
-					t.mu.Lock()
+					t.mu.Lock() // not needed (just an example)
 					t.seconds += 1
-					t.mu.Unlock()
+					t.mu.Unlock() // not needed  (just an example)
 
-					t.mu.Lock()
+					t.mu.Lock() // not needed  (just an example)
 					t.period += 1
-					t.mu.Unlock()
+					t.mu.Unlock() // not needed  (just an example)
 
 					time.Sleep(1 * time.Second)
 
