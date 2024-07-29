@@ -1,7 +1,7 @@
 package lights
 
 import (
-	"fmt"
+	"context"
 	"sync"
 	"time"
 )
@@ -32,15 +32,17 @@ type trafficLight struct {
 	config  Configuration
 	light   string
 	mu      sync.Mutex
+	cxt     context.Context
 }
 
-func NewTrafficLight(c Configuration) TrafficLight {
+func NewTrafficLight(ctx context.Context, c Configuration) TrafficLight {
 	return &trafficLight{
 		on:      false,
 		config:  c,
 		seconds: 0,
 		period:  0,
 		light:   Yellow,
+		cxt:     ctx,
 	}
 }
 
@@ -50,47 +52,45 @@ func (t *trafficLight) On() {
 
 		go func() {
 			for {
-
-				t.mu.Lock()
-				t.seconds += 1
-				t.mu.Unlock()
-
-				time.Sleep(1 * time.Second)
-
-				if !t.on {
-					break
-				}
-			}
-		}()
-
-		go func() {
-			for {
-				t.mu.Lock()
-				t.period += 1
-				t.mu.Unlock()
-				time.Sleep(1 * time.Second)
-				fmt.Println(t.light, " ", t.period, " seconds")
-				if t.light == Yellow && t.config.Yellow == t.period {
+				select {
+				case <-t.cxt.Done():
+					return
+				default:
 					t.mu.Lock()
-					t.period = 0
+					t.seconds += 1
 					t.mu.Unlock()
-					t.light = Green
-				}
 
-				if t.light == Green && t.config.Green == t.period {
 					t.mu.Lock()
-					t.period = 0
+					t.period += 1
 					t.mu.Unlock()
-					t.light = Red
-				}
 
-				if t.light == Red && t.config.Red == t.period {
-					t.mu.Lock()
-					t.period = 0
-					t.mu.Unlock()
-					t.light = Yellow
-				}
+					time.Sleep(1 * time.Second)
 
+					if t.light == Yellow && t.config.Yellow == t.period {
+						t.mu.Lock()
+						t.period = 0
+						t.mu.Unlock()
+						t.light = Green
+					}
+
+					if t.light == Green && t.config.Green == t.period {
+						t.mu.Lock()
+						t.period = 0
+						t.mu.Unlock()
+						t.light = Red
+					}
+
+					if t.light == Red && t.config.Red == t.period {
+						t.mu.Lock()
+						t.period = 0
+						t.mu.Unlock()
+						t.light = Yellow
+					}
+
+					if !t.on {
+						return
+					}
+				}
 			}
 		}()
 	}
